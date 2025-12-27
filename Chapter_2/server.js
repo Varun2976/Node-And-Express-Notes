@@ -10,14 +10,24 @@ app.get('/' , (req,res) => {
 
 }); 
 app.get('/about' ,(req,res) => {
-    res.send('<h1>This is about page</h1>');
+    res.send(`
+        <body style ="background-color : blue ; color : black" >
+            <h1>DATA TIMEEE !!!!</h1>
+            <p>${JSON.stringify(data)}</p>
+        </body>
+        
+        `);
 })
+
+
 
 //Type 2 - API Endpoints
 
 app.get('/app/data' , (req,res) => {
     console.log('This is for the data part , rest api')
     res.send(data);
+    const newEntry = req.body() //request to access data from the body
+    res.sendStatus(201) // The created status
 })
 
 app.listen(PORT, () => console.log(`Server has started at ${PORT}`))
