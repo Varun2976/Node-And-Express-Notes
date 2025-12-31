@@ -1,0 +1,11 @@
+GET http://localhost:5200
+
+### REGISTRATION
+POST http://localhost:5200/auth/register
+Content-Type: application/json
+
+{
+    "username" : "",
+    "password" : ""
+
+}
