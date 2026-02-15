@@ -5,25 +5,59 @@ import db from '../db.js'
 
 const router = express.Router()
 
-router.post('/register' , (req,res) =>{
-    const{username,password} = req.body
+router.post('/register', (req, res) => {
+    const { username, password } = req.body
 
-    const hashedPassword = bcrypt.hashSync(password,8) // Accesses the bcrypt library which helps us encrypt the pass word
-    
-    //save the data that is provided into the db
+    const hashedPassword = bcrypt.hashSync(password, 8)
 
-    try{
+    try {
         const insertUser = db.prepare(`INSERT INTO users(username,password) VALUES(?,?)`)
+        const result = insertUser.run(username, hashedPassword)
 
-        const result = insertUser.run(username,hashedPassword)
-    }catch(err){
+        const defaultTodo = `Hello ! Enter your first to do`
+        const insertTodo = db.prepare(`INSERT INTO todos (user_id,task) VALUES(?, ?)`)
+        insertTodo.run(result.lastInsertRowid, defaultTodo)
+
+        const token = jwt.sign(
+            { id: result.lastInsertRowid },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        )
+
+        res.json({ token })
+    } catch (err) {
         console.log(err.message)
         res.sendStatus(503)
     }
 })
 
-router.post('/login' , (req,res) =>{
-    
+router.post('/login', (req, res) => {
+    const { username, password } = req.body
+
+    try {
+        const getUser = db.prepare('SELECT * FROM users WHERE username=?')
+        const user = getUser.get(username)
+
+        if (!user) {
+            return res.status(404).send({ message: "User not found" })
+        }
+
+        const passwordIsValid = bcrypt.compareSync(password, user.password)
+        if (!passwordIsValid) {
+            return res.status(401).send({ message: "Password is invalid" })
+        }
+
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '24h' }
+        )
+
+        res.json({ token })
+    } catch (err) {
+        console.log(err.message)
+        res.sendStatus(503)
+    }
 })
 
 export default router

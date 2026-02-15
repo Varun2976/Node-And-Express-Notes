@@ -10,11 +10,11 @@ db.exec(`
     )
     `)
 db.exec(`
-    CREATE TABLE todo(
+    CREATE TABLE todos(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         task TEXT,
-        status BOOLEAN DEFAULT 0,
+        completed BOOLEAN DEFAULT 0,
         FOREIGN KEY(user_id) references users(id)
     )
     `)
