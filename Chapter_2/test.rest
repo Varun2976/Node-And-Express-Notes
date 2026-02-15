@@ -1,1 +1,12 @@
+//Data Endpoint
 GET http://localhost:5383/about
+###
+POST http://localhost:5383/api/data
+Content-Type: application/json
+
+{
+  "name": "Siya"
+}
+
+###
+DELETE http://localhost:5383/api/data
