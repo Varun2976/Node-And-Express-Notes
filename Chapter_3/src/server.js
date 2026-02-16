@@ -3,6 +3,8 @@ import path, {dirname} from 'path'
 import { fileURLToPath } from 'url'
 import authRoutes from './routes/authRoutes.js'
 import todoRoutes from './routes/todoRoutes.js'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 5200 // Here the 5200 becomes the backup port

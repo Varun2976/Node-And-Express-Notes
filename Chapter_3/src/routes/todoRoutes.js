@@ -1,15 +1,24 @@
 import express from 'express'
 import db from '../db.js'
+import authMiddleware from '../middleware/authMiddleware.js'
 
 const router = express.Router()
 
-router.get('/',(req,res) => { //get all to-dos
+router.get('/', authMiddleware, (req, res) => {
     const getTodos = db.prepare('SELECT * FROM todos WHERE user_id = ?')
     const todos = getTodos.all(req.userId)
     res.json(todos)
 })
-router.post('/',(req,res) => { //Accept a to-do
-    
+router.post('/', authMiddleware, (req, res) => {
+    const { text } = req.body
+
+    const insertTodo = db.prepare(
+        'INSERT INTO todos (text, user_id) VALUES (?, ?)'
+    )
+
+    insertTodo.run(text, req.userId)
+
+    res.json({ success: true })
 })
 router.put('/:id',(req,res) => { //Update a to-do
     
