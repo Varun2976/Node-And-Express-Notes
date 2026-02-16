@@ -3,6 +3,7 @@ import path, {dirname} from 'path'
 import { fileURLToPath } from 'url'
 import authRoutes from './routes/authRoutes.js'
 import todoRoutes from './routes/todoRoutes.js'
+import authMiddleware from './middleware/authMiddleware.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -20,7 +21,7 @@ app.get('/' , (req,res) => {
     res.sendFile(path.join(__dirname ,'public' ,'index.html'))
 })
 app.use('/auth',authRoutes)
-app.use('/todos',todoRoutes)
+app.use('/todos',authMiddleware,todoRoutes)
 app.listen(PORT ,()=>{
     console.log(`Server started : ${PORT}`)
 })
